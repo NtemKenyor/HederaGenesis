@@ -1,0 +1,8 @@
+{
+    "name": "My Hedera Token",
+    "symbol": "MHT",
+    "decimals": 18,
+    "description": "A demo token deployed on Hedera Testnet",
+    "image": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/info/logo.png"
+}
+  

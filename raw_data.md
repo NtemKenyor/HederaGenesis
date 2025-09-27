@@ -1,0 +1,14 @@
+
+
+HEDERA DETAILS:
+
+
+$ npx hardhat run scripts/do-ops.js --network hedera_testnet
+Deployer: 0xe3D2976D80B5Dc6491037953af49D8a8ACDe3ebb
+Deploying MyToken (MyTokenX / MTX) with deployer 0xe3D2976D80B5Dc6491037953af49D8a8ACDe3ebb
+MyToken deployed at: 0x5DE34E3529fb0B036b6fB8f7A1D2f83A3f19BeCb
+Minted 5000 tokens to 0xe3D2976D80B5Dc6491037953af49D8a8ACDe3ebb — tx: 0x8d789c2c478d8ef42b5aea1f199d5830d40b59f38a3b6f67fdcf54e1a22b1bec
+Granted MINTER_ROLE to 0x23ce01731d2dF1ADD75AFc29CD2440f945204b82 — tx: 0x819d452f40503ad8db4deef69f0b39d10ee053a4c0e0a61c6da05702fbac85bd
+Transferred 10 tokens to 0x97E9E5082E44c9e618aAD746280c2EB702f28bE3 — tx: 0xdee21596c853d7bb0f89a518477bad7fa4ad13cd35495d0aa9898f1d5c84addb
+✅ Script finished successfully
+

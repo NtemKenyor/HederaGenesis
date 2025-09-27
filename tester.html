@@ -1,0 +1,1124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hedera Token Manager</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ethers/5.7.2/ethers.umd.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #4f46e5, #7c3aed);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+        
+        .wallet-status {
+            display: inline-block;
+            padding: 10px 20px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 25px;
+            margin-top: 15px;
+            font-size: 14px;
+        }
+        
+        .main-content {
+            padding: 40px;
+        }
+        
+        .connect-section {
+            text-align: center;
+            padding: 60px 20px;
+        }
+        
+        .connect-btn {
+            background: linear-gradient(135deg, #4f46e5, #7c3aed);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            font-size: 1.1rem;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(79, 70, 229, 0.3);
+        }
+        
+        .connect-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(79, 70, 229, 0.4);
+        }
+        
+        .tabs {
+            display: flex;
+            border-bottom: 2px solid #e5e7eb;
+            margin-bottom: 30px;
+            overflow-x: auto;
+        }
+        
+        .tab {
+            padding: 15px 25px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 500;
+            color: #6b7280;
+            transition: all 0.3s ease;
+            white-space: nowrap;
+        }
+        
+        .tab.active {
+            color: #4f46e5;
+            border-bottom: 3px solid #4f46e5;
+        }
+        
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.3s ease-in;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .form-group {
+            margin-bottom: 25px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #374151;
+        }
+        
+        .form-group input, .form-group textarea {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid #e5e7eb;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s ease;
+        }
+        
+        .form-group input:focus, .form-group textarea:focus {
+            outline: none;
+            border-color: #4f46e5;
+            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+        }
+        
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+        
+        .btn {
+            background: linear-gradient(135deg, #10b981, #059669);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            margin-right: 10px;
+            margin-bottom: 10px;
+        }
+        
+        .btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+        }
+        
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+        
+        .btn-danger {
+            background: linear-gradient(135deg, #ef4444, #dc2626);
+        }
+        
+        .btn-danger:hover {
+            box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
+        }
+        
+        .status-message {
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-weight: 500;
+        }
+        
+        .status-success {
+            background: #d1fae5;
+            color: #065f46;
+            border: 1px solid #a7f3d0;
+        }
+        
+        .status-error {
+            background: #fee2e2;
+            color: #991b1b;
+            border: 1px solid #fca5a5;
+        }
+        
+        .status-info {
+            background: #dbeafe;
+            color: #1e40af;
+            border: 1px solid #93c5fd;
+        }
+        
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid #ffffff;
+            border-radius: 50%;
+            border-top-color: transparent;
+            animation: spin 1s ease-in-out infinite;
+            margin-right: 8px;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        .token-list {
+            background: #f9fafb;
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+        
+        .token-item {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            border: 1px solid #e5e7eb;
+            transition: all 0.3s ease;
+        }
+        
+        .token-item:hover {
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+        
+        .token-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        
+        .token-name {
+            font-weight: 600;
+            color: #111827;
+        }
+        
+        .token-address {
+            font-family: monospace;
+            font-size: 14px;
+            color: #6b7280;
+        }
+        
+        .advanced-section {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 25px;
+            margin-top: 30px;
+        }
+        
+        .advanced-section h3 {
+            color: #374151;
+            margin-bottom: 20px;
+            font-size: 1.2rem;
+        }
+        
+        @media (max-width: 768px) {
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+            
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .main-content {
+                padding: 20px;
+            }
+            
+            .tabs {
+                flex-wrap: wrap;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🌟 Hedera Token Manager</h1>
+            <p>Create, manage, and interact with your Hedera EVM tokens</p>
+            <div id="walletStatus" class="wallet-status">
+                Not Connected
+            </div>
+        </div>
+        
+        <div class="main-content">
+            <div id="connectSection" class="connect-section">
+                <h2>Connect Your Wallet</h2>
+                <p style="margin: 20px 0; color: #6b7280;">Connect your MetaMask wallet to start managing tokens on Hedera</p>
+                <button id="connectWallet" class="connect-btn">
+                    Connect MetaMask
+                </button>
+            </div>
+            
+            <div id="mainApp" style="display: none;">
+                <div class="tabs">
+                    <button class="tab active" onclick="showTab('deploy', this)">Deploy Token</button>
+                    <button class="tab" onclick="showTab('mint', this)">Mint Tokens</button>
+                    <button class="tab" onclick="showTab('roles', this)">Manage Roles</button>
+                    <button class="tab" onclick="showTab('metadata', this)">Set Metadata</button>
+                    <button class="tab" onclick="showTab('transfer', this)">Transfer</button>
+                    <button class="tab" onclick="showTab('existing', this)">Existing Tokens</button>
+                </div>
+                
+                <!-- Deploy Token Tab -->
+                <div id="deployTab" class="tab-content active">
+                    <h2>Deploy New Token</h2>
+                    <form id="deployForm">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="tokenName">Token Name</label>
+                                <input type="text" id="tokenName" placeholder="e.g., My Awesome Token" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="tokenSymbol">Token Symbol</label>
+                                <input type="text" id="tokenSymbol" placeholder="e.g., MAT" required>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="initialMint">Initial Mint Amount (optional)</label>
+                            <input type="number" id="initialMint" placeholder="0" min="0">
+                        </div>
+                        <button type="submit" class="btn" id="deployBtn">
+                            Deploy Token
+                        </button>
+                    </form>
+                    
+                    <div class="advanced-section">
+                        <h3>Deployed Tokens</h3>
+                        <div id="deployedTokens" class="token-list">
+                            <p style="color: #6b7280;">No tokens deployed yet</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Mint Tokens Tab -->
+                <div id="mintTab" class="tab-content">
+                    <h2>Mint Tokens</h2>
+                    <form id="mintForm">
+                        <div class="form-group">
+                            <label for="mintTokenAddress">Token Contract Address</label>
+                            <input type="text" id="mintTokenAddress" placeholder="0x..." required>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="mintRecipient">Recipient Address</label>
+                                <input type="text" id="mintRecipient" placeholder="0x..." required>
+                            </div>
+                            <div class="form-group">
+                                <label for="mintAmount">Amount</label>
+                                <input type="number" id="mintAmount" placeholder="100" min="0" step="0.000001" required>
+                            </div>
+                        </div>
+                        <button type="submit" class="btn" id="mintBtn">
+                            Mint Tokens
+                        </button>
+                    </form>
+                </div>
+                
+                <!-- Roles Tab -->
+                <div id="rolesTab" class="tab-content">
+                    <h2>Manage Roles</h2>
+                    <form id="rolesForm">
+                        <div class="form-group">
+                            <label for="rolesTokenAddress">Token Contract Address</label>
+                            <input type="text" id="rolesTokenAddress" placeholder="0x..." required>
+                        </div>
+                        <div class="form-group">
+                            <label for="roleAccount">Account Address</label>
+                            <input type="text" id="roleAccount" placeholder="0x..." required>
+                        </div>
+                        <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                            <button type="button" class="btn" onclick="grantMinterRole()">
+                                Grant Minter Role
+                            </button>
+                            <button type="button" class="btn btn-danger" onclick="revokeMinterRole()">
+                                Revoke Minter Role
+                            </button>
+                        </div>
+                    </form>
+                </div>
+                
+                <!-- Metadata Tab -->
+                <div id="metadataTab" class="tab-content">
+                    <h2>Set Token Metadata</h2>
+                    <form id="metadataForm">
+                        <div class="form-group">
+                            <label for="metadataTokenAddress">Token Contract Address</label>
+                            <input type="text" id="metadataTokenAddress" placeholder="0x..." required>
+                        </div>
+                        <div class="form-group">
+                            <label for="metadataRegistryAddress">Registry Contract Address</label>
+                            <input type="text" id="metadataRegistryAddress" placeholder="0x..." required>
+                        </div>
+                        <div class="form-group">
+                            <label for="metadataURI">Metadata URI</label>
+                            <input type="text" id="metadataURI" placeholder="ipfs://... or https://..." required>
+                        </div>
+                        <button type="submit" class="btn" id="metadataBtn">
+                            Set Metadata
+                        </button>
+                    </form>
+                </div>
+                
+                <!-- Transfer Tab -->
+                <div id="transferTab" class="tab-content">
+                    <h2>Transfer Tokens</h2>
+                    <form id="transferForm">
+                        <div class="form-group">
+                            <label for="transferTokenAddress">Token Contract Address</label>
+                            <input type="text" id="transferTokenAddress" placeholder="0x..." required>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="transferRecipient">Recipient Address</label>
+                                <input type="text" id="transferRecipient" placeholder="0x..." required>
+                            </div>
+                            <div class="form-group">
+                                <label for="transferAmount">Amount</label>
+                                <input type="number" id="transferAmount" placeholder="10" min="0" step="0.000001" required>
+                            </div>
+                        </div>
+                        <button type="submit" class="btn" id="transferBtn">
+                            Transfer Tokens
+                        </button>
+                    </form>
+                </div>
+                
+                <!-- Existing Tokens Tab -->
+                <div id="existingTab" class="tab-content">
+                    <h2>Load Existing Token</h2>
+                    <form id="existingForm">
+                        <div class="form-group">
+                            <label for="existingTokenAddress">Token Contract Address</label>
+                            <input type="text" id="existingTokenAddress" placeholder="0x5DE34E3529fb0B036b6fB8f7A1D2f83A3f19BeCb" required>
+                        </div>
+                        <button type="submit" class="btn">
+                            Load Token Info
+                        </button>
+                    </form>
+                    
+                    <div id="tokenInfo" class="advanced-section" style="display: none;">
+                        <h3>Token Information</h3>
+                        <div id="tokenDetails"></div>
+                        <div style="margin-top: 20px;">
+                            <button class="btn" onclick="useTokenForMinting()">Use for Minting</button>
+                            <button class="btn" onclick="useTokenForRoles()">Use for Roles</button>
+                            <button class="btn" onclick="useTokenForTransfer()">Use for Transfer</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div id="statusMessages"></div>
+        </div>
+    </div>
+
+    <script>
+        // Smart contract ABI - based on your MyToken.sol
+        const TOKEN_ABI = [
+            "constructor(string memory name, string memory symbol)",
+            "function name() view returns (string)",
+            "function symbol() view returns (string)",
+            "function decimals() view returns (uint8)",
+            "function totalSupply() view returns (uint256)",
+            "function balanceOf(address account) view returns (uint256)",
+            "function mint(address to, uint256 amount) external",
+            "function transfer(address to, uint256 amount) returns (bool)",
+            "function grantRole(bytes32 role, address account) external",
+            "function revokeRole(bytes32 role, address account) external",
+            "function hasRole(bytes32 role, address account) view returns (bool)",
+            "event Transfer(address indexed from, address indexed to, uint256 value)",
+            "event RoleGranted(bytes32 indexed role, address indexed account, address indexed sender)"
+        ];
+        
+        const REGISTRY_ABI = [
+            "constructor(address admin)",
+            "function setMetadata(address tokenAddress, string memory metadataURI) external",
+            "function getMetadata(address tokenAddress) view returns (string)",
+            "event MetadataSet(address indexed tokenAddress, string metadataURI)"
+        ];
+
+        // Contract bytecode - you'll need to get this from your compiled contract
+        const TOKEN_BYTECODE = "";
+        let web3Provider = null;
+        let signer = null;
+        let userAddress = null;
+        let deployedTokens = [];
+        let currentTokenInfo = null;
+
+        // MINTER_ROLE constant
+        const MINTER_ROLE = ethers.utils.id("MINTER_ROLE");
+
+        // Initialize app
+        document.addEventListener('DOMContentLoaded', function() {
+            setupEventListeners();
+            checkWalletConnection();
+        });
+
+        function setupEventListeners() {
+            document.getElementById('connectWallet').addEventListener('click', connectWallet);
+            document.getElementById('deployForm').addEventListener('submit', deployToken);
+            document.getElementById('mintForm').addEventListener('submit', mintTokens);
+            document.getElementById('metadataForm').addEventListener('submit', setMetadata);
+            document.getElementById('transferForm').addEventListener('submit', transferTokens);
+            document.getElementById('existingForm').addEventListener('submit', loadExistingToken);
+        }
+
+        // async function checkWalletConnection() {
+        //     if (typeof window.ethereum !== 'undefined') {
+        //         try {
+        //             const accounts = await window.ethereum.request({ method: 'eth_accounts' });
+        //             if (accounts.length > 0) {
+        //                 await initializeWallet();
+        //             }
+        //         } catch (error) {
+        //             console.error('Error checking wallet connection:', error);
+        //         }
+        //     }
+        // }
+
+        // async function connectWallet() {
+        //     if (typeof window.ethereum === 'undefined') {
+        //         showMessage('MetaMask is not installed. Please install MetaMask to continue.', 'error');
+        //         return;
+        //     }
+
+        //     try {
+        //         const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
+        //         await initializeWallet();
+        //         showMessage('Wallet connected successfully!', 'success');
+        //     } catch (error) {
+        //         console.error('Error connecting wallet:', error);
+        //         showMessage('Failed to connect wallet: ' + error.message, 'error');
+        //     }
+        // }
+
+        // async function initializeWallet() {
+        //     web3Provider = new ethers.providers.Web3Provider(window.ethereum);
+        //     signer = web3Provider.getSigner();
+        //     userAddress = await signer.getAddress();
+            
+        //     const network = await web3Provider.getNetwork();
+            
+        //     document.getElementById('walletStatus').textContent = 
+        //         `Connected: ${userAddress.slice(0, 6)}...${userAddress.slice(-4)} | Network: ${network.name}`;
+            
+        //     document.getElementById('connectSection').style.display = 'none';
+        //     document.getElementById('mainApp').style.display = 'block';
+            
+        //     // Pre-fill user address in recipient fields
+        //     document.getElementById('mintRecipient').value = userAddress;
+        // }
+
+
+
+        const HEDERA_NETWORKS = {
+    mainnet: {
+        chainId: "0x127", // 295
+        chainName: "Hedera Mainnet",
+        nativeCurrency: {
+            name: "HBAR",
+            symbol: "HBAR",
+            decimals: 18
+        },
+        rpcUrls: ["https://mainnet.hashio.io/api"],
+        blockExplorerUrls: ["https://hashscan.io/mainnet"]
+    },
+    testnet: {
+        chainId: "0x128", // 296
+        chainName: "Hedera Testnet",
+        nativeCurrency: {
+            name: "HBAR",
+            symbol: "HBAR",
+            decimals: 18
+        },
+        rpcUrls: ["https://testnet.hashio.io/api"],
+        blockExplorerUrls: ["https://hashscan.io/testnet"]
+    }
+};
+
+// change this if you want to use mainnet instead
+const TARGET_NETWORK = HEDERA_NETWORKS.testnet; 
+
+async function checkWalletConnection() {
+    if (typeof window.ethereum !== "undefined") {
+        try {
+            const accounts = await window.ethereum.request({ method: "eth_accounts" });
+            if (accounts.length > 0) {
+                await ensureCorrectNetwork();
+                await initializeWallet();
+            }
+        } catch (error) {
+            console.error("Error checking wallet connection:", error);
+        }
+    }
+}
+
+async function connectWallet() {
+    if (typeof window.ethereum === "undefined") {
+        showMessage("MetaMask is not installed. Please install MetaMask to continue.", "error");
+        return;
+    }
+
+    try {
+        const accounts = await window.ethereum.request({ method: "eth_requestAccounts" });
+        if (accounts.length > 0) {
+            await ensureCorrectNetwork();
+            await initializeWallet();
+            showMessage("Wallet connected successfully!", "success");
+        }
+    } catch (error) {
+        console.error("Error connecting wallet:", error);
+        showMessage("Failed to connect wallet: " + error.message, "error");
+    }
+}
+
+async function ensureCorrectNetwork() {
+    try {
+        const currentChainId = await window.ethereum.request({ method: "eth_chainId" });
+
+        if (currentChainId !== TARGET_NETWORK.chainId) {
+            try {
+                // Try switching to Hedera
+                await window.ethereum.request({
+                    method: "wallet_switchEthereumChain",
+                    params: [{ chainId: TARGET_NETWORK.chainId }]
+                });
+                showMessage(`Switched to ${TARGET_NETWORK.chainName}`, "info");
+            } catch (switchError) {
+                // If not added, request to add the chain
+                if (switchError.code === 4902) {
+                    try {
+                        await window.ethereum.request({
+                            method: "wallet_addEthereumChain",
+                            params: [TARGET_NETWORK]
+                        });
+                        showMessage(`Added and switched to ${TARGET_NETWORK.chainName}`, "info");
+                    } catch (addError) {
+                        console.error("Failed to add Hedera network:", addError);
+                        showMessage("Please add Hedera network manually in MetaMask.", "error");
+                    }
+                } else {
+                    console.error("Error switching network:", switchError);
+                    showMessage("Failed to switch to Hedera network.", "error");
+                }
+            }
+        }
+    } catch (error) {
+        console.error("Network check failed:", error);
+    }
+}
+
+async function initializeWallet() {
+    try {
+        web3Provider = new ethers.providers.Web3Provider(window.ethereum);
+        signer = web3Provider.getSigner();
+        userAddress = await signer.getAddress();
+
+        const network = await web3Provider.getNetwork();
+
+        document.getElementById("walletStatus").textContent =
+            `Connected: ${userAddress.slice(0, 6)}...${userAddress.slice(-4)} | Network: ${network.name}`;
+
+        document.getElementById("connectSection").style.display = "none";
+        document.getElementById("mainApp").style.display = "block";
+
+        // Pre-fill user address in recipient fields
+        document.getElementById("mintRecipient").value = userAddress;
+    } catch (error) {
+        console.error("Error initializing wallet:", error);
+        showMessage("Failed to initialize wallet", "error");
+    }
+}
+
+
+
+        function showTab(tabName, element) {
+            // Hide all tab contents
+            const contents = document.querySelectorAll('.tab-content');
+            contents.forEach(content => {
+                content.classList.remove('active');
+            });
+            
+            // Remove active class from all tabs
+            const tabs = document.querySelectorAll('.tab');
+            tabs.forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            // Show selected tab content and mark tab as active
+            document.getElementById(tabName + 'Tab').classList.add('active');
+            if (element) {
+                element.classList.add('active');
+            }
+        }
+
+        async function deployToken(event) {
+            event.preventDefault();
+            
+            const deployBtn = document.getElementById('deployBtn');
+            const originalText = deployBtn.textContent;
+            
+            try {
+                deployBtn.innerHTML = '<div class="loading"></div> Deploying...';
+                deployBtn.disabled = true;
+                
+                const name = document.getElementById('tokenName').value;
+                const symbol = document.getElementById('tokenSymbol').value;
+                const initialMint = document.getElementById('initialMint').value;
+                
+                showMessage('Deploying token contract...', 'info');
+                
+                // Create contract factory
+                const factory = new ethers.ContractFactory(TOKEN_ABI, TOKEN_BYTECODE, signer);
+                
+                // Deploy contract
+                const contract = await factory.deploy(name, symbol);
+                await contract.deployed();
+                
+                showMessage(`Token deployed successfully! Address: ${contract.address}`, 'success');
+                
+                // Store deployed token
+                const tokenInfo = {
+                    name: name,
+                    symbol: symbol,
+                    address: contract.address,
+                    deployedAt: new Date().toISOString()
+                };
+                deployedTokens.push(tokenInfo);
+                updateDeployedTokensList();
+                
+                // Initial mint if specified
+                if (initialMint && parseFloat(initialMint) > 0) {
+                    showMessage('Minting initial tokens...', 'info');
+                    await contract.mint(userAddress, ethers.utils.parseEther(initialMint));
+                    showMessage(`Minted ${initialMint} tokens to your address`, 'success');
+                }
+                
+                // Reset form
+                document.getElementById('deployForm').reset();
+                
+            } catch (error) {
+                console.error('Deployment error:', error);
+                showMessage('Deployment failed: ' + error.message, 'error');
+            } finally {
+                deployBtn.textContent = originalText;
+                deployBtn.disabled = false;
+            }
+        }
+
+        async function mintTokens(event) {
+            event.preventDefault();
+            
+            const mintBtn = document.getElementById('mintBtn');
+            const originalText = mintBtn.textContent;
+            
+            try {
+                mintBtn.innerHTML = '<div class="loading"></div> Minting...';
+                mintBtn.disabled = true;
+                
+                const tokenAddress = document.getElementById('mintTokenAddress').value;
+                const recipient = document.getElementById('mintRecipient').value;
+                const amount = document.getElementById('mintAmount').value;
+                
+                const contract = new ethers.Contract(tokenAddress, TOKEN_ABI, signer);
+                const decimals = await contract.decimals();
+                const mintAmount = ethers.utils.parseUnits(amount, decimals);
+                
+                const tx = await contract.mint(recipient, mintAmount);
+                showMessage('Transaction submitted. Waiting for confirmation...', 'info');
+                
+                const receipt = await tx.wait();
+                showMessage(`Successfully minted ${amount} tokens! Tx: ${receipt.transactionHash}`, 'success');
+                
+                document.getElementById('mintForm').reset();
+                document.getElementById('mintRecipient').value = userAddress; // Reset to user address
+                
+            } catch (error) {
+                console.error('Minting error:', error);
+                showMessage('Minting failed: ' + error.message, 'error');
+            } finally {
+                mintBtn.textContent = originalText;
+                mintBtn.disabled = false;
+            }
+        }
+
+        async function grantMinterRole() {
+            const tokenAddress = document.getElementById('rolesTokenAddress').value;
+            const account = document.getElementById('roleAccount').value;
+            
+            if (!tokenAddress || !account) {
+                showMessage('Please fill in all fields', 'error');
+                return;
+            }
+            
+            try {
+                const contract = new ethers.Contract(tokenAddress, TOKEN_ABI, signer);
+                const tx = await contract.grantRole(MINTER_ROLE, account);
+                
+                showMessage('Transaction submitted. Waiting for confirmation...', 'info');
+                const receipt = await tx.wait();
+                showMessage(`Minter role granted successfully! Tx: ${receipt.transactionHash}`, 'success');
+                
+            } catch (error) {
+                console.error('Grant role error:', error);
+                showMessage('Failed to grant role: ' + error.message, 'error');
+            }
+        }
+
+        async function revokeMinterRole() {
+            const tokenAddress = document.getElementById('rolesTokenAddress').value;
+            const account = document.getElementById('roleAccount').value;
+            
+            if (!tokenAddress || !account) {
+                showMessage('Please fill in all fields', 'error');
+                return;
+            }
+            
+            try {
+                const contract = new ethers.Contract(tokenAddress, TOKEN_ABI, signer);
+                const tx = await contract.revokeRole(MINTER_ROLE, account);
+                
+                showMessage('Transaction submitted. Waiting for confirmation...', 'info');
+                const receipt = await tx.wait();
+                showMessage(`Minter role revoked successfully! Tx: ${receipt.transactionHash}`, 'success');
+                
+            } catch (error) {
+                console.error('Revoke role error:', error);
+                showMessage('Failed to revoke role: ' + error.message, 'error');
+            }
+        }
+
+        async function setMetadata(event) {
+            event.preventDefault();
+            
+            const metadataBtn = document.getElementById('metadataBtn');
+            const originalText = metadataBtn.textContent;
+            
+            try {
+                metadataBtn.innerHTML = '<div class="loading"></div> Setting...';
+                metadataBtn.disabled = true;
+                
+                const tokenAddress = document.getElementById('metadataTokenAddress').value;
+                const registryAddress = document.getElementById('metadataRegistryAddress').value;
+                const metadataURI = document.getElementById('metadataURI').value;
+                
+                const contract = new ethers.Contract(registryAddress, REGISTRY_ABI, signer);
+                const tx = await contract.setMetadata(tokenAddress, metadataURI);
+                
+                showMessage('Transaction submitted. Waiting for confirmation...', 'info');
+                const receipt = await tx.wait();
+                showMessage(`Metadata set successfully! Tx: ${receipt.transactionHash}`, 'success');
+                
+                document.getElementById('metadataForm').reset();
+                
+            } catch (error) {
+                console.error('Set metadata error:', error);
+                showMessage('Failed to set metadata: ' + error.message, 'error');
+            } finally {
+                metadataBtn.textContent = originalText;
+                metadataBtn.disabled = false;
+            }
+        }
+
+        async function transferTokens(event) {
+            event.preventDefault();
+            
+            const transferBtn = document.getElementById('transferBtn');
+            const originalText = transferBtn.textContent;
+            
+            try {
+                transferBtn.innerHTML = '<div class="loading"></div> Transferring...';
+                transferBtn.disabled = true;
+                
+                const tokenAddress = document.getElementById('transferTokenAddress').value;
+                const recipient = document.getElementById('transferRecipient').value;
+                const amount = document.getElementById('transferAmount').value;
+                
+                const contract = new ethers.Contract(tokenAddress, TOKEN_ABI, signer);
+                const decimals = await contract.decimals();
+                const transferAmount = ethers.utils.parseUnits(amount, decimals);
+                
+                const tx = await contract.transfer(recipient, transferAmount);
+                showMessage('Transaction submitted. Waiting for confirmation...', 'info');
+                
+                const receipt = await tx.wait();
+                showMessage(`Successfully transferred ${amount} tokens! Tx: ${receipt.transactionHash}`, 'success');
+                
+                document.getElementById('transferForm').reset();
+                
+            } catch (error) {
+                console.error('Transfer error:', error);
+                showMessage('Transfer failed: ' + error.message, 'error');
+            } finally {
+                transferBtn.textContent = originalText;
+                transferBtn.disabled = false;
+            }
+        }
+
+        async function loadExistingToken(event) {
+            event.preventDefault();
+            
+            try {
+                const tokenAddress = document.getElementById('existingTokenAddress').value;
+                const contract = new ethers.Contract(tokenAddress, TOKEN_ABI, signer);
+                
+                // Get token details
+                const [name, symbol, decimals, totalSupply] = await Promise.all([
+                    contract.name(),
+                    contract.symbol(),
+                    contract.decimals(),
+                    contract.totalSupply()
+                ]);
+                
+                const userBalance = await contract.balanceOf(userAddress);
+                const hasMinterRole = await contract.hasRole(MINTER_ROLE, userAddress);
+                
+                currentTokenInfo = {
+                    address: tokenAddress,
+                    name: name,
+                    symbol: symbol,
+                    decimals: decimals,
+                    totalSupply: ethers.utils.formatUnits(totalSupply, decimals),
+                    userBalance: ethers.utils.formatUnits(userBalance, decimals),
+                    hasMinterRole: hasMinterRole
+                };
+                
+                displayTokenInfo(currentTokenInfo);
+                showMessage('Token loaded successfully!', 'success');
+                
+            } catch (error) {
+                console.error('Load token error:', error);
+                showMessage('Failed to load token: ' + error.message, 'error');
+            }
+        }
+
+        function displayTokenInfo(tokenInfo) {
+            const tokenDetails = document.getElementById('tokenDetails');
+            tokenDetails.innerHTML = `
+                <div class="token-item">
+                    <div class="token-info">
+                        <div class="token-name">${tokenInfo.name} (${tokenInfo.symbol})</div>
+                        <div class="token-address">${tokenInfo.address}</div>
+                    </div>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-top: 15px;">
+                        <div>
+                            <strong>Decimals:</strong> ${tokenInfo.decimals}
+                        </div>
+                        <div>
+                            <strong>Total Supply:</strong> ${parseFloat(tokenInfo.totalSupply).toLocaleString()}
+                        </div>
+                        <div>
+                            <strong>Your Balance:</strong> ${parseFloat(tokenInfo.userBalance).toLocaleString()}
+                        </div>
+                        <div>
+                            <strong>Minter Role:</strong> ${tokenInfo.hasMinterRole ? '✅ Yes' : '❌ No'}
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            document.getElementById('tokenInfo').style.display = 'block';
+        }
+
+        function useTokenForMinting() {
+            if (!currentTokenInfo) return;
+            
+            document.getElementById('mintTokenAddress').value = currentTokenInfo.address;
+            showTab('mint');
+            showMessage('Token address loaded for minting!', 'info');
+        }
+
+        function useTokenForRoles() {
+            if (!currentTokenInfo) return;
+            
+            document.getElementById('rolesTokenAddress').value = currentTokenInfo.address;
+            showTab('roles');
+            showMessage('Token address loaded for role management!', 'info');
+        }
+
+        function useTokenForTransfer() {
+            if (!currentTokenInfo) return;
+            
+            document.getElementById('transferTokenAddress').value = currentTokenInfo.address;
+            showTab('transfer');
+            showMessage('Token address loaded for transfers!', 'info');
+        }
+
+        function updateDeployedTokensList() {
+            const container = document.getElementById('deployedTokens');
+            
+            if (deployedTokens.length === 0) {
+                container.innerHTML = '<p style="color: #6b7280;">No tokens deployed yet</p>';
+                return;
+            }
+            
+            container.innerHTML = deployedTokens.map(token => `
+                <div class="token-item">
+                    <div class="token-info">
+                        <div class="token-name">${token.name} (${token.symbol})</div>
+                        <div class="token-address">${token.address}</div>
+                    </div>
+                    <div style="margin-top: 10px;">
+                        <small style="color: #6b7280;">Deployed: ${new Date(token.deployedAt).toLocaleString()}</small>
+                        <div style="margin-top: 8px;">
+                            <button class="btn" style="font-size: 14px; padding: 6px 12px;" onclick="copyToClipboard('${token.address}')">
+                                Copy Address
+                            </button>
+                            <button class="btn" style="font-size: 14px; padding: 6px 12px;" onclick="loadTokenQuick('${token.address}')">
+                                Load Token
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function copyToClipboard(text) {
+            navigator.clipboard.writeText(text).then(() => {
+                showMessage('Address copied to clipboard!', 'success');
+            });
+        }
+
+        async function loadTokenQuick(address) {
+            document.getElementById('existingTokenAddress').value = address;
+            await loadExistingToken({ preventDefault: () => {} });
+            showTab('existing');
+        }
+
+        function showMessage(message, type) {
+            const container = document.getElementById('statusMessages');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `status-message status-${type}`;
+            messageDiv.textContent = message;
+            
+            container.appendChild(messageDiv);
+            
+            // Auto-remove after 5 seconds
+            setTimeout(() => {
+                if (messageDiv.parentNode) {
+                    messageDiv.parentNode.removeChild(messageDiv);
+                }
+            }, 5000);
+            
+            // Scroll to message
+            messageDiv.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+
+        // Listen for account changes
+        if (window.ethereum) {
+            window.ethereum.on('accountsChanged', (accounts) => {
+                if (accounts.length === 0) {
+                    // User disconnected
+                    location.reload();
+                } else {
+                    // User switched accounts
+                    initializeWallet();
+                }
+            });
+
+            window.ethereum.on('chainChanged', (chainId) => {
+                // User switched networks
+                location.reload();
+            });
+        }
+
+        // Add some example token addresses for easy testing
+        function loadExampleToken() {
+            document.getElementById('existingTokenAddress').value = '0x5DE34E3529fb0B036b6fB8f7A1D2f83A3f19BeCb';
+        }
+
+        // Add keyboard shortcuts
+        document.addEventListener('keydown', function(e) {
+            if (e.ctrlKey || e.metaKey) {
+                switch(e.key) {
+                    case '1':
+                        e.preventDefault();
+                        showTab('deploy');
+                        break;
+                    case '2':
+                        e.preventDefault();
+                        showTab('mint');
+                        break;
+                    case '3':
+                        e.preventDefault();
+                        showTab('roles');
+                        break;
+                    case '4':
+                        e.preventDefault();
+                        showTab('metadata');
+                        break;
+                    case '5':
+                        e.preventDefault();
+                        showTab('transfer');
+                        break;
+                    case '6':
+                        e.preventDefault();
+                        showTab('existing');
+                        break;
+                }
+            }
+        });
+    </script>
+</body>
+</html>
