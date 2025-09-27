@@ -12,7 +12,6 @@ No build step required — just open the `.html` files in your browser:
 
 * `index.html` → Homepage (entry point)
 * `ramp.html` → Ramp (fiat ↔ crypto)
-* `token_builder.html` → Token builder
 * `wallet.html` → Wallet interactions, etc
 
 ✅ Verify: wallet connects, balances load, swaps calculate correctly, liquidity actions display properly.
