@@ -12,8 +12,8 @@ async function main() {
   // const TOKEN_A         = process.env.TOKEN_A; // e.g. WSTT
   // const TOKEN_B         = process.env.TOKEN_B; // e.g. USSD
   // const TOKEN_A = "0xd0c6db65b4B6Fd9B0FF325520A30c2aa726133f2"; // GX
-  const TOKEN_A = "0xF22eF0085f6511f70b01a68F360dCc56261F768a"; // STT (i.e WSTT)
-  const TOKEN_B = "0x22d33Bf4e4076C018539bEBD7213A505fa980676"; // USSD
+  const TOKEN_A = "0xcdC31f8e817f34d2996407AFCf7244352FE773F3"; // STT (i.e WSTT)
+  const TOKEN_B = "0x65ad6C756ED11Ff84ACF9eDa8B5891F945aecD1F"; // USSD
 
 
   // Load contracts
@@ -52,8 +52,8 @@ async function main() {
   // --------------------------
   // 1. ADD LIQUIDITY
   // --------------------------
-  const amountA = hre.ethers.utils.parseUnits("50", decimalsA);
-  const amountB = hre.ethers.utils.parseUnits("1", decimalsB);
+  const amountA = hre.ethers.utils.parseUnits("10000010", decimalsA);
+  const amountB = hre.ethers.utils.parseUnits("10000", decimalsB);
 
   console.log("Approving router for liquidity...");
   await (await TokenA.approve(ROUTER_ADDRESS, amountA)).wait();

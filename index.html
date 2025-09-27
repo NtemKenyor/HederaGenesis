@@ -1027,6 +1027,7 @@
                     box-sizing: border-box;
                 }
                  */
+
                 #token {
                     font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
                     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
@@ -1044,14 +1045,14 @@
                     overflow: hidden;
                 }
                 
-                #token .header {
+                #token .header_inner {
                     background: linear-gradient(135deg, #4f46e5, #7c3aed);
                     color: white;
                     padding: 30px;
                     text-align: center;
                 }
                 
-                #token .header h1 {
+                #token .header_inner .precise_h1 {
                     font-size: 2.5rem;
                     font-weight: 700;
                     margin-bottom: 10px;
@@ -1092,14 +1093,14 @@
                     box-shadow: 0 6px 20px rgba(79, 70, 229, 0.4);
                 }
                 
-                #token .tabs {
+                #token .tabs_token {
                     display: flex;
                     border-bottom: 2px solid #e5e7eb;
                     margin-bottom: 30px;
                     overflow-x: auto;
                 }
                 
-                #token .tab {
+                #token .tab_token {
                     padding: 15px 25px;
                     background: none;
                     border: none;
@@ -1111,18 +1112,20 @@
                     white-space: nowrap;
                 }
                 
-                #token .tab.active {
+                #token .tab_token.active {
                     color: #4f46e5;
                     border-bottom: 3px solid #4f46e5;
                 }
                 
-                #token .tab-content {
+                #token .tab-content_4_token {
                     display: none;
                     animation: fadeIn 0.3s ease-in;
+                    color: #000;
                 }
                 
-                #token .tab-content.active {
+                #token .tab-content_4_token.active {
                     display: block;
+                    color: #000;
                 }
                 
                 @keyframes fadeIn {
@@ -1130,18 +1133,18 @@
                     to { opacity: 1; transform: translateY(0); }
                 }
                 
-                #token .form-group {
+                #token .form-group_inner {
                     margin-bottom: 25px;
                 }
                 
-                #token .form-group label {
+                #token .form-group_inner label {
                     display: block;
                     margin-bottom: 8px;
                     font-weight: 600;
                     color: #374151;
                 }
                 
-                #token .form-group input, #token .form-group textarea {
+                #token .form-group_inner input, #token .form-group_inner textarea {
                     width: 100%;
                     padding: 12px 16px;
                     border: 2px solid #e5e7eb;
@@ -1150,7 +1153,7 @@
                     transition: border-color 0.3s ease;
                 }
                 
-                #token .form-group input:focus, #token .form-group textarea:focus {
+                #token .form-group_inner input:focus, #token .form-group_inner textarea:focus {
                     outline: none;
                     border-color: #4f46e5;
                     box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
@@ -1372,7 +1375,7 @@
                         grid-template-columns: 1fr;
                     }
                     
-                    #token .header h1 {
+                    #token .header_inner .precise_h1 {
                         font-size: 2rem;
                     }
                     
@@ -1380,7 +1383,7 @@
                         padding: 20px;
                     }
                     
-                    #token .tabs {
+                    #token .tabs_token {
                         flex-wrap: wrap;
                     }
                     
@@ -1396,8 +1399,8 @@
                 }
             </style>
             <div class="container">
-                <div class="header">
-                    <h1>🌟 Hedera Token Manager</h1>
+                <div class="header_inner">
+                    <h1 class="precise_h1">🌟 Hedera Token Manager</h1>
                     <p>Create, manage, and interact with your Hedera EVM tokens</p>
                     <div id="walletStatus" class="wallet-status">
                         Not Connected
@@ -1408,37 +1411,37 @@
                     <div id="connectSection" class="connect-section">
                         <h2>Connect Your Wallet</h2>
                         <p style="margin: 20px 0; color: #6b7280;">Connect your MetaMask wallet to start managing tokens on Hedera</p>
-                        <button id="connectWallet_" class="connect-btn">
+                        <!-- <button id="connectWallet_" class="connect-btn">
                             Connect MetaMask
-                        </button>
+                        </button> -->
                     </div>
                     
                     <div id="mainApp" style="display: none;">
-                        <div class="tabs">
-                            <button class="tab active" onclick="showTab('deploy', this)">Deploy Token</button>
-                            <button class="tab" onclick="showTab('mint', this)">Mint Tokens</button>
-                            <button class="tab" onclick="showTab('roles', this)">Manage Roles</button>
-                            <button class="tab" onclick="showTab('metadata', this)">Set Metadata</button>
-                            <button class="tab" onclick="showTab('transfer', this)">Transfer</button>
-                            <button class="tab" onclick="showTab('existing', this)">Existing Tokens</button>
-                            <button class="tab" onclick="showTab('manage', this)">Manage Tokens</button>
+                        <div class="tabs_token">
+                            <button class="tab_token active" onclick="showTab('deploy', this)">Deploy Token</button>
+                            <button class="tab_token" onclick="showTab('mint', this)">Mint Tokens</button>
+                            <button class="tab_token" onclick="showTab('roles', this)">Manage Roles</button>
+                            <button class="tab_token" onclick="showTab('metadata', this)">Set Metadata</button>
+                            <button class="tab_token" onclick="showTab('transfer', this)">Transfer</button>
+                            <button class="tab_token" onclick="showTab('existing', this)">Existing Tokens</button>
+                            <button class="tab_token" onclick="showTab('manage', this)">Manage Tokens</button>
                         </div>
                         
                         <!-- Deploy Token Tab -->
-                        <div id="deployTab" class="tab-content active">
+                        <div id="deployTab" class="tab-content_4_token active">
                             <h2>Deploy New Token</h2>
                             <form id="deployForm">
                                 <div class="form-row">
-                                    <div class="form-group">
+                                    <div class="form-group_inner">
                                         <label for="tokenName">Token Name</label>
                                         <input type="text" id="tokenName" placeholder="e.g., My Awesome Token" required>
                                     </div>
-                                    <div class="form-group">
+                                    <div class="form-group_inner">
                                         <label for="tokenSymbol">Token Symbol</label>
                                         <input type="text" id="tokenSymbol" placeholder="e.g., MAT" required>
                                     </div>
                                 </div>
-                                <div class="form-group">
+                                <div class="form-group_inner">
                                     <label for="initialMint">Initial Mint Amount (optional)</label>
                                     <input type="number" id="initialMint" placeholder="0" min="0">
                                 </div>
@@ -1449,19 +1452,19 @@
                         </div>
                         
                         <!-- Mint Tokens Tab -->
-                        <div id="mintTab" class="tab-content">
+                        <div id="mintTab" class="tab-content_4_token">
                             <h2>Mint Tokens</h2>
                             <form id="mintForm">
-                                <div class="form-group">
+                                <div class="form-group_inner">
                                     <label for="mintTokenAddress">Token Contract Address</label>
                                     <input type="text" id="mintTokenAddress" placeholder="0x..." required>
                                 </div>
                                 <div class="form-row">
-                                    <div class="form-group">
+                                    <div class="form-group_inner">
                                         <label for="mintRecipient">Recipient Address</label>
                                         <input type="text" id="mintRecipient" placeholder="0x..." required>
                                     </div>
-                                    <div class="form-group">
+                                    <div class="form-group_inner">
                                         <label for="mintAmount">Amount</label>
                                         <input type="number" id="mintAmount" placeholder="100" min="0" step="0.000001" required>
                                     </div>
@@ -1473,14 +1476,14 @@
                         </div>
                         
                         <!-- Roles Tab -->
-                        <div id="rolesTab" class="tab-content">
+                        <div id="rolesTab" class="tab-content_4_token">
                             <h2>Manage Roles</h2>
                             <form id="rolesForm">
-                                <div class="form-group">
+                                <div class="form-group_inner">
                                     <label for="rolesTokenAddress">Token Contract Address</label>
                                     <input type="text" id="rolesTokenAddress" placeholder="0x..." required>
                                 </div>
-                                <div class="form-group">
+                                <div class="form-group_inner">
                                     <label for="roleAccount">Account Address</label>
                                     <input type="text" id="roleAccount" placeholder="0x..." required>
                                 </div>
@@ -1496,18 +1499,18 @@
                         </div>
                         
                         <!-- Metadata Tab -->
-                        <div id="metadataTab" class="tab-content">
+                        <div id="metadataTab" class="tab-content_4_token">
                             <h2>Set Token Metadata</h2>
                             <form id="metadataForm">
-                                <div class="form-group">
+                                <div class="form-group_inner">
                                     <label for="metadataTokenAddress">Token Contract Address</label>
                                     <input type="text" id="metadataTokenAddress" placeholder="0x..." required>
                                 </div>
-                                <div class="form-group">
+                                <div class="form-group_inner">
                                     <label for="metadataRegistryAddress">Registry Contract Address</label>
                                     <input type="text" id="metadataRegistryAddress" placeholder="0x..." required>
                                 </div>
-                                <div class="form-group">
+                                <div class="form-group_inner">
                                     <label for="metadataURI">Metadata URI</label>
                                     <input type="text" id="metadataURI" placeholder="ipfs://... or https://..." required>
                                 </div>
@@ -1518,19 +1521,19 @@
                         </div>
                         
                         <!-- Transfer Tab -->
-                        <div id="transferTab" class="tab-content">
+                        <div id="transferTab" class="tab-content_4_token">
                             <h2>Transfer Tokens</h2>
                             <form id="transferForm">
-                                <div class="form-group">
+                                <div class="form-group_inner">
                                     <label for="transferTokenAddress">Token Contract Address</label>
                                     <input type="text" id="transferTokenAddress" placeholder="0x..." required>
                                 </div>
                                 <div class="form-row">
-                                    <div class="form-group">
+                                    <div class="form-group_inner">
                                         <label for="transferRecipient">Recipient Address</label>
                                         <input type="text" id="transferRecipient" placeholder="0x..." required>
                                     </div>
-                                    <div class="form-group">
+                                    <div class="form-group_inner">
                                         <label for="transferAmount">Amount</label>
                                         <input type="number" id="transferAmount" placeholder="10" min="0" step="0.000001" required>
                                     </div>
@@ -1542,10 +1545,10 @@
                         </div>
                         
                         <!-- Existing Tokens Tab -->
-                        <div id="existingTab" class="tab-content">
+                        <div id="existingTab" class="tab-content_4_token">
                             <h2>Load Existing Token</h2>
                             <form id="existingForm">
-                                <div class="form-group">
+                                <div class="form-group_inner">
                                     <label for="existingTokenAddress">Token Contract Address</label>
                                     <input type="text" id="existingTokenAddress" placeholder="0x5DE34E3529fb0B036b6fB8f7A1D2f83A3f19BeCb" required>
                                 </div>
@@ -1567,7 +1570,7 @@
                         </div>
                         
                         <!-- Manage Tokens Tab -->
-                        <div id="manageTab" class="tab-content">
+                        <div id="manageTab" class="tab-content_4_token">
                             <div class="management-header">
                                 <h2>Manage Your Tokens</h2>
                                 <button class="refresh-btn" onclick="refreshAllTokens()">
@@ -1591,7 +1594,7 @@
                             <div class="advanced-section">
                                 <h3>Import Existing Token</h3>
                                 <form id="importForm" style="display: flex; gap: 10px; align-items: end;">
-                                    <div class="form-group" style="flex: 1;">
+                                    <div class="form-group_inner" style="flex: 1;">
                                         <label for="importTokenAddress">Token Contract Address</label>
                                         <input type="text" id="importTokenAddress" placeholder="0x..." required>
                                     </div>
@@ -1615,7 +1618,7 @@
             <div class="pair-selector">
                 <label>Trading Pair:</label>
                 <select id="swapPairSelect" onchange="selectPair(this.value)">
-                    <option value="STT_USSD">STT/USSD - Solareum ↔ US Standard Dollar</option>
+                    <option value="STT_USSD">STT/USSD - Standard Testnet Token ↔ US Standard Dollar</option>
                     <option value="GX_USSD">GX/USSD - GX Token ↔ US Standard Dollar</option>
                 </select>
             </div>
@@ -1670,7 +1673,7 @@
             <div class="pair-selector">
                 <label>Trading Pair:</label>
                 <select id="liquidityPairSelect" onchange="selectPair(this.value)">
-                    <option value="STT_USSD">STT/USSD - Solareum ↔ US Standard Dollar</option>
+                    <option value="STT_USSD">STT/USSD - Standard Testnet Token ↔ US Standard Dollar</option>
                     <option value="GX_USSD">GX/USSD - GX Token ↔ US Standard Dollar</option>
                 </select>
             </div>
@@ -1710,7 +1713,7 @@
             <div class="pair-selector">
                 <label>Trading Pair:</label>
                 <select id="removePairSelect" onchange="selectPair(this.value)">
-                    <option value="STT_USSD">STT/USSD - Solareum ↔ US Standard Dollar</option>
+                    <option value="STT_USSD">STT/USSD - Standard Testnet Token ↔ US Standard Dollar</option>
                     <option value="GX_USSD">GX/USSD - GX Token ↔ US Standard Dollar</option>
                 </select>
             </div>
@@ -1880,17 +1883,17 @@
         const PAIRS_CONFIG = {
             STT_USSD: {
                 name: 'STT/USSD',
-                FACTORY_ADDRESS: "0xb06229eD4c53aEC803eC9E2c0d25B954685d77EC",
-                ROUTER_ADDRESS: "0xEd03899F0804B5BD49a06192f22900f89F3EC019",
-                PAIR_ADDRESS: "0x81001f1e0fC4aBB1F76444AFeEb148Bc8d1F9118",
+                FACTORY_ADDRESS: "0x59A2F68F62A04A94E16F889C37c89804895FC124",
+                ROUTER_ADDRESS: "0x9eC7a42F3f69680d5C8E9817fDA41B9025038d4E",
+                PAIR_ADDRESS: "0x3D20aFDA3e07596fff8471F1De9Aa6dE4a9e44e7",
                 TOKEN_A: {
-                    address: "0xF22eF0085f6511f70b01a68F360dCc56261F768a",
+                    address: "0xcdC31f8e817f34d2996407AFCf7244352FE773F3",
                     symbol: "STT",
                     name: "Stanadrd Testnet Token",
                     decimals: 18
                 },
                 TOKEN_B: {
-                    address: "0x22d33Bf4e4076C018539bEBD7213A505fa980676",
+                    address: "0x65ad6C756ED11Ff84ACF9eDa8B5891F945aecD1F",
                     symbol: "USSD",
                     name: "US Standard Dollar",
                     decimals: 18
@@ -1898,17 +1901,17 @@
             },
             GX_USSD: {
                 name: 'GX/USSD',
-                FACTORY_ADDRESS: "0x221Fc0043237a93ddEc3b3C98faEA55D96eE2f96",
-                ROUTER_ADDRESS: "0xb04116B49E34078b35468205982e5CD1B6d566F7",
-                PAIR_ADDRESS: "0x7b22883D5ca7443eC45325CfF7BEdAD49BcC2110",
+                FACTORY_ADDRESS: "0xf0a21805a0Be4164783bDa5b2133F32506291C87",
+                ROUTER_ADDRESS: "0x12A95F99C7fE2451F8c623462D56389ABA67A66F",
+                PAIR_ADDRESS: "0x4822e853776aBb2EabaEBD7ef4fe54D6FbE9E177",
                 TOKEN_A: {
-                    address: "0xd0c6db65b4B6Fd9B0FF325520A30c2aa726133f2",
+                    address: "0x0420b7272B146816851de0A3Df10F957ea282197",
                     symbol: "GX",
-                    name: "GX Token",
+                    name: "GamerX",
                     decimals: 18
                 },
                 TOKEN_B: {
-                    address: "0x22d33Bf4e4076C018539bEBD7213A505fa980676",
+                    address: "0x65ad6C756ED11Ff84ACF9eDa8B5891F945aecD1F",
                     symbol: "USSD",
                     name: "US Standard Dollar",
                     decimals: 18
@@ -3376,7 +3379,7 @@
                 try {
 
                     document.getElementById("walletStatus").textContent =
-                    `Connected: ${userAddress.slice(0, 6)}...${userAddress.slice(-4)} | Network: ${network.name}`;
+                    `Connected: ${userAddress.slice(0, 6)}...${userAddress.slice(-4)} | Network: ${TARGET_NETWORK.chainName}`;
 
                     document.getElementById("connectSection").style.display = "none";
                     document.getElementById("mainApp").style.display = "block";
@@ -3482,13 +3485,13 @@
 
         function showTab(tabName, element) {
             // Hide all tab contents
-            const contents = document.querySelectorAll('.tab-content');
+            const contents = document.querySelectorAll('.tab-content_4_token');
             contents.forEach(content => {
                 content.classList.remove('active');
             });
             
             // Remove active class from all tabs
-            const tabs = document.querySelectorAll('.tab');
+            const tabs = document.querySelectorAll('.tab_token');
             tabs.forEach(tab => {
                 tab.classList.remove('active');
             });

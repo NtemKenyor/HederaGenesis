@@ -8,8 +8,8 @@ async function main() {
 
   // 🔹 CHANGE THESE FOR DIFFERENT PAIRS
 //   const TOKEN_A = "0xd0c6db65b4B6Fd9B0FF325520A30c2aa726133f2"; // GX
-  const TOKEN_A = "0xF22eF0085f6511f70b01a68F360dCc56261F768a"; // STT
-  const TOKEN_B = "0x22d33Bf4e4076C018539bEBD7213A505fa980676"; // USSD
+  const TOKEN_A = "0x0420b7272B146816851de0A3Df10F957ea282197"; // STT
+  const TOKEN_B = "0x65ad6C756ED11Ff84ACF9eDa8B5891F945aecD1F"; // USSD - stable
 
   // Deploy Factory
   const Factory = await hre.ethers.getContractFactory("AMMFactory");
