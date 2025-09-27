@@ -3,8 +3,15 @@
 **A go-to tool for everything on Hedera**  
 The all-in-one DeFi, tooling, and infrastructure portal for the Hedera network — built to simplify token creation, liquidity management, swaps, on/off-ramping, analytics, and debugging, all in one seamless interface.
 
-Live Demo: https://roynek.com/HederaGenesis/  
-Repository: https://github.com/NtemKenyor/HederaGenesis  
+🔗 Live Demo: [roynek.com/HederaGenesis](https://roynek.com/HederaGenesis/)  
+📂 Repository: [github.com/NtemKenyor/HederaGenesis](https://github.com/NtemKenyor/HederaGenesis)  
+🎥 Demo Video: [Watch on YouTube](https://youtu.be/j05K5rpywSA)  
+
+---
+
+## 🎬 Project Demo
+
+[![Hedera Genesis Demo Video](https://img.youtube.com/vi/j05K5rpywSA/maxresdefault.jpg)](https://youtu.be/j05K5rpywSA)
 
 ---
 
