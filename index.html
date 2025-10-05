@@ -1849,34 +1849,135 @@
 
     <script>
 
-        const HEDERA_NETWORKS = {
-            mainnet: {
-                chainId: "0x127", // 295
-                chainName: "Hedera Mainnet",
-                nativeCurrency: {
-                    name: "HBAR",
-                    symbol: "HBAR",
-                    decimals: 18
-                },
-                rpcUrls: ["https://mainnet.hashio.io/api"],
-                blockExplorerUrls: ["https://hashscan.io/mainnet"]
-            },
-            testnet: {
-                chainId: "0x128", // 296
-                chainName: "Hedera Testnet",
-                nativeCurrency: {
-                    name: "HBAR",
-                    symbol: "HBAR",
-                    decimals: 18
-                },
-                rpcUrls: ["https://testnet.hashio.io/api"],
-                blockExplorerUrls: ["https://hashscan.io/testnet"]
-            }
-        };
+        // const HEDERA_NETWORKS = {
+        //     mainnet: {
+        //         chainId: "0x127", // 295
+        //         chainName: "Hedera Mainnet",
+        //         nativeCurrency: {
+        //             name: "HBAR",
+        //             symbol: "HBAR",
+        //             decimals: 18
+        //         },
+        //         rpcUrls: ["https://mainnet.hashio.io/api"],
+        //         blockExplorerUrls: ["https://hashscan.io/mainnet"]
+        //     },
+        //     testnet: {
+        //         chainId: "0x128", // 296
+        //         chainName: "Hedera Testnet",
+        //         nativeCurrency: {
+        //             name: "HBAR",
+        //             symbol: "HBAR",
+        //             decimals: 18
+        //         },
+        //         rpcUrls: ["https://testnet.hashio.io/api"],
+        //         blockExplorerUrls: ["https://hashscan.io/testnet"]
+        //     }
+        // };
 
         // change this if you want to use mainnet instead
-        const TARGET_NETWORK = HEDERA_NETWORKS.testnet; 
-        const HEDERA_CONFIG = HEDERA_NETWORKS.testnet; 
+        
+        // const TARGET_NETWORK = HEDERA_NETWORKS.testnet; 
+        // const HEDERA_CONFIG = HEDERA_NETWORKS.testnet; 
+
+        // Hedera networks: mainnet, mainnet_mirror, testnet, testnet_mirror
+        const HEDERA_NETWORKS = {
+        // -----------------------
+        // Hedera Mainnet (RPC)
+        // -----------------------
+        mainnet: {
+            chainId: "0x127", // 295
+            chainName: "Hedera Mainnet",
+            type: "rpc",
+            network: "mainnet",
+            nativeCurrency: {
+            name: "HBAR",
+            symbol: "HBAR",
+            decimals: 18
+            },
+            // For 'rpc' entries this is the RPC endpoint(s)
+            rpcUrls: ["https://mainnet.hashio.io/api"],
+            blockExplorerUrls: ["https://hashscan.io/mainnet"],
+            // optional human-friendly description
+            description: "Hedera Mainnet (RPC)"
+        },
+
+        // -----------------------
+        // Hedera Mainnet (Mirror) — same keys as mainnet
+        // -----------------------
+        mainnet_mirror: {
+            chainId: "0x127", // 295 (same as mainnet)
+            chainName: "Hedera Mainnet Mirror",
+            type: "mirror",
+            network: "mainnet",
+            nativeCurrency: {
+            name: "HBAR",
+            symbol: "HBAR",
+            decimals: 18
+            },
+            // NOTE: rpcUrls kept for parity — here we store the mirror API(s)
+            rpcUrls: ["https://mainnet-public.mirrornode.hedera.com/api/v1/"],
+            blockExplorerUrls: ["https://hashscan.io/mainnet"],
+            description: "Hedera Mainnet Mirror Node API"
+        },
+
+        // -----------------------
+        // Hedera Testnet (RPC)
+        // -----------------------
+        testnet: {
+            chainId: "0x128", // 296
+            chainName: "Hedera Testnet",
+            type: "rpc",
+            network: "testnet",
+            nativeCurrency: {
+            name: "HBAR",
+            symbol: "HBAR",
+            decimals: 18
+            },
+            rpcUrls: ["https://testnet.hashio.io/api"],
+            blockExplorerUrls: ["https://hashscan.io/testnet"],
+            description: "Hedera Testnet (RPC)"
+        },
+
+        // -----------------------
+        // Hedera Testnet (Mirror) — same keys as testnet
+        // -----------------------
+        testnet_mirror: {
+            chainId: "0x128", // 296 (same as testnet)
+            chainName: "Hedera Testnet Mirror",
+            type: "mirror",
+            network: "testnet",
+            nativeCurrency: {
+            name: "HBAR",
+            symbol: "HBAR",
+            decimals: 18
+            },
+            // mirror API(s) are stored under the same key name for uniform handling
+            rpcUrls: ["https://testnet.mirrornode.hedera.com/api/v1/"],
+            blockExplorerUrls: ["https://hashscan.io/testnet"],
+            description: "Hedera Testnet Mirror Node API"
+        }
+        };
+
+        // -----------------------
+        // helper: detect a network key from URL (?network=testnet_mirror)
+        // -----------------------
+        function detectNetworkKey(defaultKey = "testnet") {
+            if (typeof window === "undefined") return defaultKey;
+            const params = new URLSearchParams(window.location.search);
+            const q = params.get("network");
+            if (!q) return defaultKey;
+            const key = q.toLowerCase();
+            return HEDERA_NETWORKS[key] ? key : defaultKey;
+        }
+
+        // Example usage:
+        const SELECTED_KEY = detectNetworkKey(); // e.g. "testnet", "testnet_mirror", "mainnet", "mainnet_mirror"
+        const HEDERA_CONFIG = HEDERA_NETWORKS[SELECTED_KEY];
+        const TARGET_NETWORK = HEDERA_NETWORKS[SELECTED_KEY]; 
+
+        console.log("Using config:", SELECTED_KEY);
+        console.log("Primary URL (rpcUrls[0]):", HEDERA_CONFIG.rpcUrls[0]);
+        console.log("Explorer:", HEDERA_CONFIG.blockExplorerUrls[0]);
 
 
         // Multi-pair configuration
