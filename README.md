@@ -6,6 +6,7 @@ The all-in-one DeFi, tooling, and infrastructure portal for the Hedera network �
 🔗 Live Demo: [roynek.com/HederaGenesis](https://roynek.com/HederaGenesis/)  
 📂 Repository: [github.com/NtemKenyor/HederaGenesis](https://github.com/NtemKenyor/HederaGenesis)  
 🎥 Demo Video: [Watch on YouTube](https://youtu.be/j05K5rpywSA)  
+🎁certificate: https://hashgraphdev.com/courses/hashgraph-developer-course
 
 ---
 
